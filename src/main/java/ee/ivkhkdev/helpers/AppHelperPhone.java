@@ -5,7 +5,6 @@ import ee.ivkhkdev.input.Input;
 import ee.ivkhkdev.models.Manufacturer;
 import ee.ivkhkdev.models.Phone;
 import ee.ivkhkdev.handlers.PhoneHandler;
-import ee.ivkhkdev.models.User;
 
 import java.util.List;
 
@@ -86,18 +85,17 @@ public class AppHelperPhone implements AppHelper {
         }
     }
 
-    public void sellPhone() {
-        displayAll();
-        int phoneId = getInt("Введите ID телефона для продажи: ");
-        int quantity = getInt("Введите количество для продажи: ");
-
+    boolean sellPhone(int phoneId, int quantity) {
         Phone phone = getPhoneById(phoneId);
         if (phone != null && phone.getQuantity() >= quantity) {
             phone.setQuantity(phone.getQuantity() - quantity);
             phoneHandler.save(phones);
             System.out.println("Телефон продан.");
+            displayAll();
+            return true;
         } else {
             System.out.println("Ошибка при продаже: проверьте ID телефона и доступное количество.");
+            return false;
         }
     }
 
@@ -147,7 +145,7 @@ public class AppHelperPhone implements AppHelper {
         }
     }
 
-    private Phone getPhoneById(int id) {
+    public Phone getPhoneById(int id) {
         return phones.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
     }
 
@@ -176,9 +174,5 @@ public class AppHelperPhone implements AppHelper {
                 System.out.print("Ошибка ввода. Попробуйте снова: ");
             }
         }
-    }
-
-    public void savePhones() {
-        phoneHandler.save(phones);
     }
 }

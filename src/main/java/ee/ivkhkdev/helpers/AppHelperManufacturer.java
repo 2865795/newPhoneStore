@@ -91,10 +91,6 @@ public class AppHelperManufacturer implements AppHelper {
         return manufacturers.stream().filter(m -> m.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
     }
 
-    public void saveManufacturers() {
-        manufacturerHandler.save(manufacturers);
-    }
-
     public List<Manufacturer> getManufacturers() {
         return manufacturers;
     }

@@ -17,7 +17,6 @@ public class Phone implements Serializable {
 
     // Конструктор, который автоматически присваивает уникальный ID
     public Phone(Manufacturer manufacturer, String name, int year, String color, double price, int quantity) {
-        this.id = nextId++;  // При создании нового телефона ID будет увеличиваться
         this.manufacturer = manufacturer;
         this.name = name;
         this.year = year;

@@ -3,6 +3,7 @@ package ee.ivkhkdev.helpers;
 import ee.ivkhkdev.handlers.UserHandler;
 import ee.ivkhkdev.input.ConsoleInput;
 import ee.ivkhkdev.input.Input;
+import ee.ivkhkdev.models.Manufacturer;
 import ee.ivkhkdev.models.User;
 import java.util.List;
 
@@ -69,8 +70,8 @@ public class AppHelperUser implements AppHelper {
         }
     }
 
-    public void saveUsers() {
-        userHandler.save(users);
+    public List<User> getUsers() {
+        return users;
     }
 
     @Override
