@@ -17,13 +17,13 @@ public class AppHelperPhone implements AppHelper {
     public AppHelperPhone() {
         this.input = new ConsoleInput();
         this.phoneHandler = new PhoneHandler();
-        this.phones = phoneHandler.load();  // Загрузка списка телефонов
+        this.phones = phoneHandler.load();
         this.manufacturerHelper = new AppHelperManufacturer();
     }
 
     @Override
     public void add() {
-        manufacturerHelper.displayAll();  // Показать список производителей
+        manufacturerHelper.displayAll();
         System.out.print("Производитель есть в списке? (1 - да, 0 - нет): ");
         int response = input.nextInt();
         input.nextLine();  // Очищаем буфер после nextInt()
@@ -34,8 +34,7 @@ public class AppHelperPhone implements AppHelper {
 
         // Если выбран "1" (производитель есть в списке), то показываем список и просим выбрать
         System.out.print("Введите номер производителя из списка: ");
-        int manufacturerId = input.nextInt();
-        input.nextLine();  // Очищаем буфер после nextInt()
+        int manufacturerId = input.nextInt();// Очищаем буфер после nextInt()
         if (manufacturerId < 1 || manufacturerId > manufacturerHelper.getManufacturers().size()) {
             System.out.println("Неверный номер производителя.");
             return;
@@ -85,23 +84,22 @@ public class AppHelperPhone implements AppHelper {
         }
     }
 
-    public void sellPhone() {
-        displayAll();
-        int phoneId = getInt("Введите ID телефона для продажи: ");
-        int quantity = getInt("Введите количество для продажи: ");
-
+    boolean sellPhone(int phoneId, int quantity) {
         Phone phone = getPhoneById(phoneId);
         if (phone != null && phone.getQuantity() >= quantity) {
             phone.setQuantity(phone.getQuantity() - quantity);
             phoneHandler.save(phones);
             System.out.println("Телефон продан.");
+            return true;
         } else {
             System.out.println("Ошибка при продаже: проверьте ID телефона и доступное количество.");
+            return false;
         }
     }
 
     @Override
     public void displayAll() {
+        phones = phoneHandler.load();
         System.out.println("Список телефонов:");
         for (Phone phone : phones) {
             System.out.println(phone);
@@ -125,10 +123,28 @@ public class AppHelperPhone implements AppHelper {
 
     @Override
     public void edit() {
+        displayAll();
 
+        int phoneId = getInt("Введите ID телефона для редактирования: ");
+        if (phoneId > 0 && phoneId <= phones.size()) {
+            Phone phone = phones.get(phoneId - 1);
+
+            String name = getString("Введите новое имя (текущее: " + phone.getName() + "): ");
+            if (!name.isEmpty()) phone.setName(name);
+            int year = getInt("Введите новый год (текущий: " + phone.getYear() + "): ");
+            if (year > 0) phone.setYear(year);
+            String color = getString("Введите новый цвет (текущий: " + phone.getColor() + "): ");
+            if (!color.isEmpty()) phone.setColor(color);
+            double price = getDouble("Введите новую цену (текущая: " + phone.getPrice() + "): ");
+            if (price > 0) phone.setPrice(price);
+            phoneHandler.save(phones);
+            System.out.println("Данные телефона обновлены: " + phone);
+        } else {
+            System.out.println("Телефон с указанным ID не найден.");
+        }
     }
 
-    private Phone getPhoneById(int id) {
+    public Phone getPhoneById(int id) {
         return phones.stream().filter(p -> p.getId() == id).findFirst().orElse(null);
     }
 
@@ -158,8 +174,7 @@ public class AppHelperPhone implements AppHelper {
             }
         }
     }
-
-    public void savePhones() {
-        phoneHandler.save(phones);
+    public List<Phone> getPhones() {
+        return phones;
     }
 }

@@ -17,7 +17,6 @@ public class Phone implements Serializable {
 
     // Конструктор, который автоматически присваивает уникальный ID
     public Phone(Manufacturer manufacturer, String name, int year, String color, double price, int quantity) {
-        this.id = nextId++;  // При создании нового телефона ID будет увеличиваться
         this.manufacturer = manufacturer;
         this.name = name;
         this.year = year;
@@ -29,7 +28,7 @@ public class Phone implements Serializable {
     // Метод для отображения информации о телефоне
     @Override
     public String toString() {
-        return String.format("ID: %d, Производитель: %s, Страна: %s, Название: %s, Год: %d, Цвет: %s, Цена: %.2f, Количество: %d",
+        return String.format("ID: %d, Производитель: %s (%s), Название: %s, Год: %d, Цвет: %s, Цена: $%.2f, Количество: %d",
                 id, manufacturer.getName(), manufacturer.getCountry(), name, year, color, price, quantity);
     }
 

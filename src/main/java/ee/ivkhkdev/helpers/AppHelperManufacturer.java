@@ -4,6 +4,7 @@ import ee.ivkhkdev.input.ConsoleInput;
 import ee.ivkhkdev.input.Input;
 import ee.ivkhkdev.models.Manufacturer;
 import ee.ivkhkdev.handlers.ManufacturerHandler;
+import ee.ivkhkdev.models.User;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class AppHelperManufacturer implements AppHelper {
     public AppHelperManufacturer() {
         this.input = new ConsoleInput();
         this.manufacturerHandler = new ManufacturerHandler();
-        this.manufacturers = manufacturerHandler.load();  // Загрузка списка производителей
+        this.manufacturers = manufacturerHandler.load();
     }
 
     @Override
@@ -31,6 +32,7 @@ public class AppHelperManufacturer implements AppHelper {
 
     @Override
     public void displayAll() {
+        manufacturers = manufacturerHandler.load();
         System.out.println("Список производителей:");
         for (int i = 0; i < manufacturers.size(); i++) {
             System.out.println(i + 1 + ". " + manufacturers.get(i));
@@ -53,7 +55,21 @@ public class AppHelperManufacturer implements AppHelper {
 
     @Override
     public void edit() {
+        displayAll();
 
+        int manufacturerId = getInt("Введите ID производителя для редактирования: ");
+        if (manufacturerId > 0 && manufacturerId <= manufacturers.size()) {
+            Manufacturer manufacturer = manufacturers.get(manufacturerId - 1);
+
+            String name = getString("Введите новое имя (текущее: " + manufacturer.getName() + "): ");
+            if (!name.isEmpty()) manufacturer.setName(name);
+            String country = getString("Введите новую страну (текущее: " + manufacturer.getCountry() + "): ");
+            if (!country.isEmpty()) manufacturer.setCountry(country);
+            manufacturerHandler.save(manufacturers);
+            System.out.println("Данные производителя обновлены: " + manufacturer);
+        } else {
+            System.out.println("Производитель с указанным ID не найден.");
+        }
     }
 
     private String getString(String prompt) {
@@ -74,10 +90,6 @@ public class AppHelperManufacturer implements AppHelper {
 
     public Manufacturer getManufacturerByName(String name) {
         return manufacturers.stream().filter(m -> m.getName().equalsIgnoreCase(name)).findFirst().orElse(null);
-    }
-
-    public void saveManufacturers() {
-        manufacturerHandler.save(manufacturers);
     }
 
     public List<Manufacturer> getManufacturers() {

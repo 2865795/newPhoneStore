@@ -2,6 +2,7 @@ package ee.ivkhkdev;
 
 import ee.ivkhkdev.helpers.AppHelperPhone;
 import ee.ivkhkdev.helpers.AppHelperManufacturer;
+import ee.ivkhkdev.helpers.AppHelperSale;
 import ee.ivkhkdev.helpers.AppHelperUser;
 import ee.ivkhkdev.input.ConsoleInput;
 import ee.ivkhkdev.input.Input;
@@ -10,6 +11,7 @@ public class App {
     private final AppHelperUser userHelper;
     private AppHelperPhone phoneHelper;
     private AppHelperManufacturer manufacturerHelper;
+    private AppHelperSale saleHelper;
     private Input input;
 
     public App() {
@@ -17,6 +19,7 @@ public class App {
         this.manufacturerHelper = new AppHelperManufacturer();
         this.userHelper = new AppHelperUser();
         this.input = new ConsoleInput();
+        this.saleHelper = new AppHelperSale();
     }
 
     public void run() {
@@ -36,6 +39,7 @@ public class App {
             System.out.println("12. Удалить покупателя");
             System.out.println("13. Пополнить количество телефонов");
             System.out.println("14. Продать телефон");
+            System.out.println("15. Показать продажи телефонов");
             System.out.println("0. Выйти");
 
             int choice = getInt("Выберите опцию: ");
@@ -77,14 +81,18 @@ public class App {
                     break;
                 case 12:
                     userHelper.delete();
+                    break;
                 case 13:
                     phoneHelper.replenishStock();
+                    break;
                 case 14:
-                    phoneHelper.sellPhone();
+                    saleHelper.add();
+                    break;
+                case 15:
+                    saleHelper.displayAll();
+                    break;
                 case 0:
-                    phoneHelper.savePhones(); // Сохраняем данные перед выходом
-                    manufacturerHelper.saveManufacturers(); // Сохраняем данные перед выходом
-                    userHelper.saveUsers();
+
                     System.out.println("Выход из программы.");
                     return;
                 default:
