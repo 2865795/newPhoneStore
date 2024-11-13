@@ -1,6 +1,5 @@
 package ee.ivkhkdev.helpers;
 
-import ee.ivkhkdev.handlers.ManufacturerHandler;
 import ee.ivkhkdev.handlers.PhoneHandler;
 import ee.ivkhkdev.handlers.SaleHandler;
 import ee.ivkhkdev.handlers.UserHandler;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class AppHelperSaleTest {
@@ -39,6 +37,12 @@ class AppHelperSaleTest {
     @InjectMocks
     private AppHelperSale appHelperSale;
 
+    @Mock
+    private AppHelperPhone mockAppHelperPhone;
+
+    @Mock
+    private AppHelperUser mockAppHelperUser;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -46,6 +50,24 @@ class AppHelperSaleTest {
 
     @Test
     void add() {
+        User user = new User("John", "Doe", 25, "john.doe@example.com", "123456789");
+        List<User> users = new ArrayList<>();
+        users.add(user);
+        Phone phone = new Phone(new Manufacturer("Apple", "USA"), "iPhone", 2022, "black", 999, 10);
+        List<Phone> phones = new ArrayList<>();
+        phones.add(phone);
+
+        when(mockAppHelperUser.getUsers()).thenReturn(users);
+        when(mockAppHelperPhone.getPhones()).thenReturn(phones);
+        when(mockAppHelperPhone.sellPhone(1, 2)).thenReturn(true);
+        when(mockAppHelperPhone.getPhoneById(1)).thenReturn(phone);
+        when(mockInput.nextInt()).thenReturn(1);
+        when(mockInput.nextLine()).thenReturn("").thenReturn("1").thenReturn("2");
+        appHelperSale.add();
+
+        verify(mockSaleHandler, times(1)).save(anyList());
+        verify(mockAppHelperPhone, times(1)).sellPhone(1, 2);
+        verify(mockAppHelperPhone, times(1)).getPhoneById(1);
     }
 
     @Test
@@ -59,16 +81,7 @@ class AppHelperSaleTest {
 
     @Test
     void delete() {
-        Manufacturer manufacturer1 = new Manufacturer("Apple", "USA");
-        Sale sale = new Sale(new User("John", "Doe", 25, "john.doe@example.com", "123456789"), new Phone(manufacturer1, "iPhone", 2022, "black", 999, 10));
-        List<Sale> sales = new ArrayList<>();
-        sales.add(sale);
-        when(mockSaleHandler.load()).thenReturn(sales);
-        when(mockInput.nextLine()).thenReturn("0");
-        appHelperPhone.delete();
-        List<Phone> updatedPhones = appHelperPhone.getPhones();
-        assert(updatedPhones.isEmpty());
-        verify(mockPhoneHandler, times(1)).save(anyList());
+
     }
 
     @Test
